@@ -7,7 +7,7 @@ Room has Three major components
 3. Database
 
 Add the dependencies for the artifacts you need in the build.gradle file for your app or module:
-```
+```kotlin
 dependencies {
   def room_version = "2.2.3"
 
@@ -29,7 +29,7 @@ dependencies {
 ```
 
 Room allows you to create tables via an Entity. Let's do this now.
-```
+```kotlin
 @Entity(tableName = "word_table")
 class Word(@PrimaryKey @ColumnInfo(name = "word") val word: String)
 ```
@@ -40,7 +40,7 @@ class represents a SQLite table. Annotate your class declaration to indicate tha
 `@PrimaryKey`
 Each entity must define at least 1 field as a primary key. Even when there is only 1 field, you still need to annotate the field with the `@PrimaryKey` annotation. Also, if you want Room to assign automatic IDs to entities, you can set the `@PrimaryKey`'s autoGenerate property. If the entity has a composite primary key, you can use the primaryKeys property of the `@Entity` annotation, like this 
 
-```
+```kotlin
 @Entity(primaryKeys = arrayOf("id", "word"))
 data class Word (@PrimaryKey @ColumnInfo(name="id") val id: Int,
                  @ColumnInfo(name="word") val word: String,
@@ -49,7 +49,7 @@ data class Word (@PrimaryKey @ColumnInfo(name="id") val id: Int,
 If an entity has fields that you don't want to persist, you can annotate them using @Ignore                 
 `@Ignore val picture: Bitmap?`
 
-```
+```kotlin
 open class User {
     var picture: Bitmap? = null
 }
