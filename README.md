@@ -63,7 +63,7 @@ data class RemoteUser(
 
 DAO
 
-```
+```kotlin
 @Dao
 interface WordDao {
 
