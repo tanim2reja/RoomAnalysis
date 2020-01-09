@@ -60,3 +60,31 @@ data class RemoteUser(
     val hasVpn: Boolean
 ) : User()
 ```
+
+DAO
+
+```
+@Dao
+interface WordDao {
+
+    @Query("select * from word_table order by word asc")
+    fun getAscendingWords() : List<Word>
+
+    @Query("select * from word_table order by word desc")
+    fun getDescendingWords() : List<Word>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(word:Word)
+
+    @Query("DELETE FROM word_table")
+    suspend fun deleteAll()
+
+    @RawQuery
+    fun getWords(query: SupportSQLiteQuery?): List<Word>?
+}
+
+```
+
+The `@Insert`, `@Delete` and `@Update` annotation is a special DAO method annotation where you don't have to provide any SQL!
+`onConflict = OnConflictStrategy.IGNORE` The selected on conflict strategy ignores a new word if it's exactly the same as one already in the list. `ABORT` OnConflict strategy constant to abort the transaction. `REPLACE`
+OnConflict strategy constant to replace the old data and continue the transaction.
