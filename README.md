@@ -88,3 +88,64 @@ interface WordDao {
 The `@Insert`, `@Delete` and `@Update` annotation is a special DAO method annotation where you don't have to provide any SQL!
 `onConflict = OnConflictStrategy.IGNORE` The selected on conflict strategy ignores a new word if it's exactly the same as one already in the list. `ABORT` OnConflict strategy constant to abort the transaction. `REPLACE`
 OnConflict strategy constant to replace the old data and continue the transaction.
+
+Implement the Room database
+Room database class must be abstract and extend RoomDatabase. Usually, you only need one instance of a Room database for the whole app.
+```kotlin
+@Database(entities = arrayOf(Word::class), version = 1, exportSchema = false)
+public abstract class WordRoomDatabase : RoomDatabase() {
+
+   abstract fun wordDao(): WordDao
+
+   companion object {
+        // Singleton prevents multiple instances of database opening at the
+        // same time. 
+        @Volatile
+        private var INSTANCE: WordRoomDatabase? = null
+
+        fun getDatabase(context: Context): WordRoomDatabase {
+            val tempInstance = INSTANCE
+            if (tempInstance != null) {
+                return tempInstance
+            }
+            synchronized(this) {
+                val instance = Room.databaseBuilder(
+                        context.applicationContext,
+                        WordRoomDatabase::class.java, 
+                        "word_database"
+                    ).build()
+                INSTANCE = instance
+                return instance
+            }
+        }
+   }
+}
+
+```
+* The database class for Room must be `abstract` and `extend` `RoomDatabase`
+* annotate the class to be a Room database with `@Database` and use the annotation parameters to declare the entities that belong in the database and set the version number.
+
+Note: When you modify the database schema, you'll need to update the version number and define a migration strategy
+
+Why use a Repository?
+
+A Repository manages queries and allows you to use multiple backends. In the most common example, the Repository implements the logic for deciding whether to fetch data from a network or use results cached in a local database.
+
+```kotlin
+class WordRepository(private val wordDao: WordDao) {
+
+    // Room executes all queries on a separate thread.
+    // Observed LiveData will notify the observer when the data has changed.
+    val allWords: LiveData<List<Word>> = wordDao.getAlphabetizedWords()
+ 
+    suspend fun insert(word: Word) {
+        wordDao.insert(word)
+    }
+}
+```
+The DAO is passed into the repository constructor as opposed to the whole database. There's no need to expose the entire database to the repository.
+
+Repositories are meant to mediate between different data sources. In this simple example, you only have one data source, so the Repository doesn't do much
+
+Room Migration ???
+
