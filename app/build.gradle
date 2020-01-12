@@ -39,6 +39,9 @@ dependencies {
     // optional - Kotlin Extensions and Coroutines support for Room
     implementation "androidx.room:room-ktx:$roomVersion"
 
+    // for viewmodel
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$viewModelVersion"
+
     // optional - RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
 

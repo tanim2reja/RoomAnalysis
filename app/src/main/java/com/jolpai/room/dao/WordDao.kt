@@ -1,5 +1,6 @@
 package com.jolpai.room.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.jolpai.room.entity.Word
@@ -9,7 +10,7 @@ import com.jolpai.room.entity.Word
 interface WordDao {
 
     @Query("select * from word_table order by word asc")
-    fun getAscendingWords() : List<Word>
+    fun getAscendingWords() : LiveData<List<Word>>
 
     @Query("select * from word_table order by word desc")
     fun getDescendingWords() : List<Word>
